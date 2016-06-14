@@ -1,0 +1,125 @@
+NOTE:  This grammar is NOT in "yaccable" form.   But, I DO have a yacc file
+       I've built from this grammar (hopefully correctly) and that yacc
+       grammar correctly recognizes all of my "testbed" of CTran Prorgrams
+       so far.
+       
+	Use this grammar as you see fit.  And please let me know if/when 
+        you find inconsistencies (sometimes known as errors.)
+
+---------------------------------------------------------------------------
+			
+			CTran Grammar
+
+    Program 	-> DeclList FuncList
+
+    FuncList 	-> Func
+    FuncList 	-> Func FuncList
+
+    Func 	-> name ( ParmList ) : Type DeclList SBlock
+
+    ParmList 	-> name
+    ParmList 	-> name, ParmList
+    ParmList 	->			/* goes to "nothing", i.e. empty
+					   string */ 
+    DeclList 	-> Decl
+    DeclList 	-> Decl; DeclList
+    DeclList 	->			/* goes to "nothing", i.e. empty
+					   string */ 
+    Decl 	-> Type name
+    Decl 	-> Type name [SizeList]
+
+    SizeList	-> intLiteral
+    SizeList	-> intLiteral , SizeList
+
+    Type 	-> int
+    Type 	-> char
+    Type 	-> boolean
+    Type 	-> void
+    Type 	-> double
+
+    SBlock 	-> begin DeclList Stmts end
+
+    Stmts 	-> S
+    Stmts 	-> S Stmts
+
+    S 		-> ID = E
+    S 		-> name(ExprList)
+    S 		-> ID = ConditionalExprn
+    S 		-> if ( ConditionalExprn ) SBlock
+    S 		-> if ( ConditionalExprn ) SBlock else SBlock
+    S 		-> do intLiteral name = DoList Stmts Enddo
+    S       -> return primary
+    s       -> quit
+
+    Enddo 	-> intLiteral continue
+
+    ConditionalExprn  -> ConditionalExpr
+
+    ConditionalExpr -> E RelOp E
+    ConditionalExpr -> not (ConditionalExpr)
+    ConditionalExpr -> ConditionalExpr and (ConditionalExpr)
+    ConditionalExpr -> ConditionalExpr and E RelOp E
+    ConditionalExpr -> ConditionalExpr or (ConditionalExpr)
+    ConditionalExpr -> ConditionalExpr or E RelOp E
+
+    DoList 	-> E , E
+    DoList 	-> E , E, E
+
+    ExprList	-> E
+    ExprList	-> E , ExprList
+    ExprList 	->			/* goes to "nothing", i.e. empty
+					   string */ 
+    E      	-> E BOP BitTerm
+    E      	-> BitTerm
+
+    BitTerm	-> BitTerm ShiftOp ShiftTerm
+    BitTerm	-> ShiftTerm
+
+    ShiftTerm   -> ShiftTerm AddOp Term
+    ShiftTerm   -> Term
+
+    Term	-> Term MulOp Factor
+    Term	-> Factor
+
+    Factor	-> Factor EXP UOperand
+    Factor	-> UOperand
+
+    UOperand	-> UOp Primary
+    UOperand	-> Primary
+
+    Primary 	-> ID
+    Primary 	-> name(ExprList)   
+    Primary 	-> (E)
+    Primary 	-> floatLiteral		/* any floating point number, d.ff* */
+    Primary 	-> intLiteral		/* could be any integer number */
+    Primary 	-> stringLiteral	/* any quoted string, like 
+					   "ET phone home" */
+    ID		-> name
+    ID     	-> name [ExprList] 
+
+    RelOp	-> gt
+    RelOp	-> ge
+    RelOp	-> le
+    RelOp	-> lt
+    RelOp	-> eq
+    RelOp	-> neq
+
+    BOP		-> &
+    BOP		-> |
+    BOP		-> ^
+
+    ShiftOp	-> <<
+    ShiftOp	-> >>
+
+    MulOp	-> *
+    MulOp	-> /
+    MulOp	-> %
+
+    AddOp	-> +
+    AddOp	-> -
+
+    UOP		-> -
+    UOP		-> ++
+    UOP		-> --
+    UOP		-> &
+    UOP		-> ~

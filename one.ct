@@ -1,0 +1,23 @@
+
+main() : void
+begin
+int i;
+int j
+i = 2
+j = 3
+
+    do 100 i = 3, 7, 1
+	printi(i)
+	printLine()
+	
+	do 200 j = 4,5
+        printi(j)
+        printLine()
+
+	200 continue
+	
+	
+100 continue
+   
+    printLine()
+end
